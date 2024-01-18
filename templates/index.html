@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <title>Machine Learning Prediction</title>
+</head>
+<body>
+    <div class="container">
+        <div class="input-container">
+            <!-- 两行，每行五个输入框 -->
+            <div class="input-row">
+                {% for i in range(5) %}
+                    <div class="input-box">
+                        <label for="inputData{{ i }}">Data {{ i + 1 }}:</label>
+                        <input type="text" id="inputData{{ i }}" placeholder="Enter data...">
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="input-row">
+                {% for i in range(5, 10) %}
+                    <div class="input-box">
+                        <label for="inputData{{ i }}">Data {{ i + 1 }}:</label>
+                        <input type="text" id="inputData{{ i }}" placeholder="Enter data...">
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- “读取文件”按钮 -->
+            <input type="file" id="fileInput" accept=".csv, .xlsx">
+            <button onclick="readFile()">读取文件</button>
+        </div>
+
+        <!-- “Predict”按钮和输出结果 -->
+        <div class="prediction-container">
+            <button onclick="makePrediction()">Predict</button>
+            <p id="predictionResult"></p>
+        </div>
+    </div>
+</body>
+</html>
