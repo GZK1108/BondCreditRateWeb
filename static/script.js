@@ -1,35 +1,3 @@
-// JavaScript code in script.js
-async function makePrediction() {
-    // 从十个输入框中获取数据
-    const inputDataArray = [];
-    for (let i = 0; i < 10; i++) {
-        const inputId = "inputData" + i;
-        const inputData = document.getElementById(inputId).value;
-        inputDataArray.push(inputData);
-    }
-
-    try {
-        // 发送 POST 请求到后端，传递十个数据
-        const response = await fetch('/predict', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ data: inputDataArray }),
-        });
-
-        // 解析 JSON 响应
-        const result = await response.json();
-
-        // 显示预测结果
-        document.getElementById("predictionResult").innerText = "Prediction Result: " + result.result;
-    } catch (error) {
-        console.error('Error:', error);
-        document.getElementById("predictionResult").innerText = "Error during prediction";
-    }
-}
-
-// JavaScript code in script.js
 async function readFile() {
     const fileInput = document.getElementById("fileInput");
     const file = fileInput.files[0];
@@ -40,17 +8,51 @@ async function readFile() {
         reader.onload = function (e) {
             const contents = e.target.result;
 
-            // 处理文件内容，将其分割成数组（以逗号为分隔符）
-            const data_array = contents.split(",");
-
-            // 将数组内容填充到输入框中
-            for (let i = 0; i < Math.min(data_array.length, 10); i++) {
-                const inputId = "inputData" + i;
-                document.getElementById(inputId).value = data_array[i];
-            }
+            // 将文件内容发送到后端处理
+            sendDataToBackend(contents);
         };
 
-        // 指定文件编码为 UTF-8
         reader.readAsText(file, 'UTF-8');
+    }
+}
+
+async function sendDataToBackend(data) {
+    try {
+        const response = await fetch('/process_data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain',
+            },
+            body: data,
+        });
+
+        if (response.ok) {
+            const datasetSize = await response.text();
+            document.getElementById("datasetSize").innerText = `Dataset Size: ${datasetSize}`;
+            console.log('Data processed successfully');
+        } else {
+            console.error('Failed to process data');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+async function makePrediction() {
+    try {
+        const response = await fetch('/predict', {
+            method: 'GET',
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            document.getElementById("predictionResult").innerText = "Prediction Result: " + result.result;
+        } else {
+            console.error('Failed to get prediction result');
+            document.getElementById("predictionResult").innerText = "Error during prediction";
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        document.getElementById("predictionResult").innerText = "Error during prediction";
     }
 }

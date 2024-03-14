@@ -9,34 +9,18 @@
 </head>
 <body>
     <div class="container">
-        <div class="input-container">
-            <!-- 两行，每行五个输入框 -->
-            <div class="input-row">
-                {% for i in range(5) %}
-                    <div class="input-box">
-                        <label for="inputData{{ i }}">Data {{ i + 1 }}:</label>
-                        <input type="text" id="inputData{{ i }}" placeholder="Enter data...">
-                    </div>
-                {% endfor %}
-            </div>
-            <div class="input-row">
-                {% for i in range(5, 10) %}
-                    <div class="input-box">
-                        <label for="inputData{{ i }}">Data {{ i + 1 }}:</label>
-                        <input type="text" id="inputData{{ i }}" placeholder="Enter data...">
-                    </div>
-                {% endfor %}
-            </div>
-
+        <div class="content">
             <!-- “读取文件”按钮 -->
             <input type="file" id="fileInput" accept=".csv, .xlsx">
             <button onclick="readFile()">读取文件</button>
-        </div>
-
-        <!-- “Predict”按钮和输出结果 -->
-        <div class="prediction-container">
+            <br><br>
+            <!-- “Predict”按钮 -->
             <button onclick="makePrediction()">Predict</button>
-            <p id="predictionResult"></p>
+            <!-- 预测结果 -->
+
+            <div id="predictionResult" class="output-box"></div>
+            <!-- 数据集大小 -->
+            <p id="datasetSize"></p>
         </div>
     </div>
 </body>

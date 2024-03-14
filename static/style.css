@@ -9,21 +9,13 @@ body {
 
 .container {
     display: flex;
-    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    height: 100vh;
 }
 
-.input-container {
-    margin-bottom: 20px;
-}
-
-.input-row {
-    display: flex;
-    margin-bottom: 10px;
-}
-
-.input-box {
-    margin-right: 10px;
+.content {
+    text-align: center;
 }
 
 button {
@@ -37,4 +29,11 @@ button {
 
 button:hover {
     background-color: #45a049;
+}
+
+.output-box {
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 300px; /* 可根据需要调整宽度 */
+    margin-top: 20px; /* 调整上外边距，增加预测结果框与其他元素的距离 */
 }

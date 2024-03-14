@@ -1,58 +1,64 @@
-# Python code in app.py
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import joblib
-import numpy as np
+import pandas as pd
 
-app = Flask(__name__, static_folder='static')
+app = Flask(__name__)
 
-classification = {}
+# 全局变量，用于存储数据
+stored_data = None
+
+# 信用评级编码
+credit_rate = {
+    0: 'AAA',
+    1: 'AA',
+    2: 'A',
+    3: 'BBB',
+    4: 'B',
+    5: 'C'}
 
 
 
 @app.route('/')
-def home():
+def index():
     return render_template('index.html')
 
-@app.route('/predict', methods=['POST', 'OPTIONS'])
+@app.route('/process_data', methods=['POST'])
+def process_data():
+    global stored_data  # 使用全局变量
+
+    data = request.data.decode('utf-8')
+
+    # 在这里处理数据，存储在后端
+    stored_data = list(data.split(','))
+
+    # 获取数据集大小
+    dataset_size = len(data.split(','))  # 假设数据以逗号分隔
+
+    return str(dataset_size), 200
+
+@app.route('/predict', methods=['GET'])
 def predict():
-    if request.method == 'OPTIONS':
-        # Respond to the preflight OPTIONS request
-        response = app.response_class(
-            response='',
-            status=200,
-            mimetype='application/json'
-        )
-    elif request.method == 'POST':
-        try:
-            # 获取十个数据
-            data_array = request.json['data']  # list
-            # 如果data_array里面有''，删除所有''
-            data_array = list(filter(None, data_array))
-            # 将data_array转换为numpy数组,并转换为float类型
-            data_array = np.array(data_array).astype(float).reshape(1,-1)
+    global stored_data  # 使用全局变量
 
+    if stored_data is None:
+        return jsonify({'error': 'No data available for prediction'}), 400
 
-            # TODO: 调用你的机器学习模型进行预测，使用 'data_array'
-            model = joblib.load('lgb.pkl')
-            prediction_result = model.predict(data_array)
-            
+    # 获取模型预测结果
+    input_data = stored_data  # 使用存储的数据
+    # 把input_data转换成pandas DataFrame格式，转换str为float
+    input_data = [float(i) for i in input_data]
+    # 将input转换为(1,-1)
+    input_data = pd.DataFrame([input_data])
 
-            # 将预测结果转换为字符串类型
-            prediction_result = str(prediction_result[0])
+    pred = joblib.load('lgb.pkl').predict(input_data)  # 调用你的模型进行预测，返回预测结果
+    prediction_result = str(credit_rate[pred[0]])
+    # prediction_result = '1'
 
-            # Return the prediction result
-            response_data = {'result': prediction_result}
-            response = jsonify(response_data)
-        except Exception as e:
-            response_data = {'error': str(e)}
-            response = jsonify(response_data)
-    
-    # Set CORS headers to allow all origins
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Methods', 'POST, OPTIONS')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+    # 返回预测结果
+    result = {'result': prediction_result}
 
-    return response
+    return jsonify(result), 200
+
 
 if __name__ == '__main__':
     app.run(debug=False)
