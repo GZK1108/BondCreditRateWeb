@@ -57,6 +57,9 @@ def predict():
     # 返回预测结果
     result = {'result': prediction_result}
 
+    # 销毁存储的数据
+    stored_data = None
+
     return jsonify(result), 200
 
 

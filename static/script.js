@@ -3,18 +3,24 @@ async function readFile() {
     const file = fileInput.files[0];
 
     if (file) {
-        const reader = new FileReader();
+        const fileName = file.name;
+        const fileExtension = fileName.split('.').pop().toLowerCase();
 
-        reader.onload = function (e) {
-            const contents = e.target.result;
+        if (fileExtension === 'csv' || fileExtension === 'xlsx') {
+            const reader = new FileReader();
 
-            // 将文件内容发送到后端处理
-            sendDataToBackend(contents);
-        };
+            reader.onload = function (e) {
+                const contents = e.target.result;
+                sendDataToBackend(contents);
+            };
 
-        reader.readAsText(file, 'UTF-8');
+            reader.readAsText(file, 'UTF-8');
+        } else {
+            alert('只允许上传 .csv 或 .xlsx 文件');
+        }
     }
 }
+
 
 async function sendDataToBackend(data) {
     try {
@@ -38,21 +44,26 @@ async function sendDataToBackend(data) {
     }
 }
 
+
 async function makePrediction() {
     try {
+        const predictionResultElement = document.getElementById("predictionResult");
+        predictionResultElement.innerText = "正在评级，请稍后...";
+
         const response = await fetch('/predict', {
             method: 'GET',
         });
 
         if (response.ok) {
             const result = await response.json();
-            document.getElementById("predictionResult").innerText = "Prediction Result: " + result.result;
+            predictionResultElement.innerText = "评级结果: " + result.result;
         } else {
             console.error('Failed to get prediction result');
-            document.getElementById("predictionResult").innerText = "Error during prediction";
+            predictionResultElement.innerText = "获取评级结果失败";
         }
     } catch (error) {
         console.error('Error:', error);
-        document.getElementById("predictionResult").innerText = "Error during prediction";
+        document.getElementById("predictionResult").innerText = "获取评级结果失败";
     }
 }
+
