@@ -5,35 +5,63 @@ body {
     justify-content: center;
     height: 100vh;
     margin: 0;
+    padding: 0;
+    background-color: #f0f0f0; /* 设置背景颜色 */
 }
+
 
 .container {
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     height: 100vh;
 }
 
-.content {
-    text-align: center;
+.buttons-container {
+    background-color: white; /* 设置按钮容器的背景颜色 */
+    padding: 20px; /* 设置按钮容器的内边距 */
+    border-radius: 10px; /* 设置按钮容器的边框圆角 */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 添加按钮容器的阴影效果 */
 }
 
-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    cursor: pointer;
-    margin-top: 10px;
+.button {
+    margin: 10px; /* 设置按钮之间的外边距 */
+    padding: 10px 20px; /* 设置按钮的内边距 */
+    font-size: 16px;  /* 设置按钮的字体大小 */
+    border: none;  /* 设置按钮的边框样式 */
+    border-radius: 5px;  /* 设置按钮的边框圆角 */
+    cursor: pointer;  /* 设置鼠标悬停时的样式 */
 }
 
-button:hover {
-    background-color: #45a049;
-}
 
 .output-box {
-    border: 1px solid #ccc;
-    padding: 10px;
-    width: 300px; /* 可根据需要调整宽度 */
+    border: 1px solid #ccc;  /* 设置预测结果框的边框样式 */
+    padding: 10px;  /* 设置预测结果框的内边距 */
+    /* width: 300px; /* 可根据需要调整宽度 */
     margin-top: 20px; /* 调整上外边距，增加预测结果框与其他元素的距离 */
+    border-radius: 5px;  /* 设置按钮的边框圆角 */
+}
+
+/* 隐藏默认的文件选择按钮 */
+input[type="file"] {
+    display: none;
+}
+
+/* 自定义文件上传按钮的样式 */
+.custom-file-upload {
+    display: inline-block;
+    background-color: #f0f0f0;
+    color: #333;
+    margin: 10px; /* 设置按钮之间的外边距 */
+    padding: 10px 20px; /* 设置按钮的内边距 */
+    font-size: 16px;  /* 设置按钮的字体大小 */
+    border: none;  /* 设置按钮的边框样式 */
+    border-radius: 5px;  /* 设置按钮的边框圆角 */
+    cursor: pointer;  /* 设置鼠标悬停时的样式 */
+}
+
+/* 当文件选择时修改按钮的样式 */
+input[type="file"]:focus + label.custom-file-upload {
+    outline: 1px solid #0066ff;
+    box-shadow: 0 0 3px #0066ff;
 }

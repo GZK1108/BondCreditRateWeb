@@ -1,3 +1,19 @@
+async function inputFile(){// 获取元素
+    const fileInput = document.getElementById('fileInput');
+    const selectedFileName = document.getElementById('selectedFileName');
+
+    // 文件选择事件
+    fileInput.addEventListener('change', function() {
+        const file = this.files[0]; // 获取选择的文件
+        if (file) {
+            selectedFileName.textContent = '已选择文件: ' + file.name; // 更新文本内容显示文件名
+        } else {
+            selectedFileName.textContent = ''; // 如果没有选择文件，则清空文本内容
+        }
+    });
+}
+
+
 async function readFile() {
     const fileInput = document.getElementById("fileInput");
     const file = fileInput.files[0];
@@ -34,7 +50,7 @@ async function sendDataToBackend(data) {
 
         if (response.ok) {
             const datasetSize = await response.text();
-            document.getElementById("datasetSize").innerText = `Dataset Size: ${datasetSize}`;
+            document.getElementById("datasetSize").innerText = `数据集长度: ${datasetSize}`;
             console.log('Data processed successfully');
         } else {
             console.error('Failed to process data');
@@ -56,7 +72,14 @@ async function makePrediction() {
 
         if (response.ok) {
             const result = await response.json();
-            predictionResultElement.innerText = "评级结果: " + result.result;
+            const predictionResults = result.results; // 从返回的 JSON 中获取评级结果列表
+
+            // 构建评级结果的字符串，并显示在页面上
+            let outputText = "评级结果:\n";
+            for (let i = 0; i < predictionResults.length; i++) {
+                outputText += predictionResults[i] + "\n";
+            }
+            predictionResultElement.innerText = outputText;
         } else {
             console.error('Failed to get prediction result');
             predictionResultElement.innerText = "获取评级结果失败";
@@ -67,3 +90,22 @@ async function makePrediction() {
     }
 }
 
+
+async function selectModel() {
+    const modelSelect = document.getElementById("modelSelect");
+    const selectedModel = modelSelect.value;
+
+    try {
+        const response = await fetch(`/set_model/${selectedModel}`, {
+            method: 'GET',
+        });
+
+        if (response.ok) {
+            console.log('Model selected:', selectedModel);
+        } else {
+            console.error('Failed to select model');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
